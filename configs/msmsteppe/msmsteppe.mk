@@ -74,7 +74,7 @@ AUDIO_FEATURE_ENABLED_USB_BURST_MODE := true
 DEVICE_PACKAGE_OVERLAYS += hardware/qcom/audio/configs/common/overlay
 
 PRODUCT_COPY_FILES += \
-    hardware/qcom/audio/configs/msmsteppe/audio_output_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_output_policy.conf \
+    hardware/qcom/audio/configs/msmsteppe/audio_io_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_io_policy.conf \
     hardware/qcom/audio/configs/msmsteppe/audio_effects.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.conf \
     hardware/qcom/audio/configs/msmsteppe/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
     hardware/qcom/audio/configs/msmsteppe/audio_tuning_mixer_tavil.txt:$(TARGET_COPY_OUT_VENDOR)/etc/audio_tuning_mixer_tavil.txt \
@@ -230,6 +230,10 @@ vendor.audio_hal.period_multiplier=3
 #ADM Buffering size in ms
 PRODUCT_PROPERTY_OVERRIDES += \
 vendor.audio.adm.buffering.ms=2
+
+#enable AAC frame ctl for A2DP sinks
+PRODUCT_PROPERTY_OVERRIDES += \
+persist.vendor.bt.aac_frm_ctl.enabled=true
 
 # for HIDL related packages
 PRODUCT_PACKAGES += \

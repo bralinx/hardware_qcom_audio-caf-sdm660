@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
  * Not a contribution.
  *
  * Copyright (C) 2013 The Android Open Source Project
@@ -363,6 +363,22 @@ uint32_t voice_get_active_session_id(struct audio_device *adev)
     return session_id;
 }
 
+bool voice_check_voicecall_usecases_active(struct audio_device *adev)
+{
+    struct listnode *node;
+    struct audio_usecase *usecase = NULL;
+
+    list_for_each(node, &adev->usecase_list) {
+        usecase = node_to_item(node, struct audio_usecase, list);
+        if (usecase->type == VOICE_CALL) {
+            ALOGV("%s: voice usecase:%s is active", __func__,
+                   use_case_table[usecase->id]);
+            return true;
+        }
+    }
+    return false;
+}
+
 int voice_check_and_set_incall_rec_usecase(struct audio_device *adev,
                                            struct stream_in *in)
 {
@@ -443,6 +459,11 @@ int voice_check_and_stop_incall_rec_usecase(struct audio_device *adev,
 snd_device_t voice_get_incall_rec_backend_device(struct stream_in *in)
 {
    snd_device_t incall_record_device = {0};
+
+    if (!in) {
+       ALOGE("%s: input stream is NULL", __func__);
+       return 0;
+    }
 
    switch(in->source) {
     case AUDIO_SOURCE_VOICE_UPLINK:

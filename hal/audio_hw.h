@@ -334,6 +334,7 @@ struct stream_out {
     card_status_t card_status;
 
     void* qaf_stream_handle;
+    void* qap_stream_handle;
     pthread_cond_t qaf_offload_cond;
     pthread_t qaf_offload_thread;
     struct listnode qaf_offload_cmd_list;
@@ -357,6 +358,9 @@ struct stream_out {
     bool stream_config_changed;
     mix_matrix_params_t pan_scale_params;
     mix_matrix_params_t downmix_params;
+    bool set_dual_mono;
+    bool prev_card_status_offline;
+    bool pspd_coeff_sent;
 };
 
 struct stream_in {
@@ -465,6 +469,7 @@ typedef void (*adm_on_routing_change_t)(void *, audio_io_handle_t);
 struct audio_device {
     struct audio_hw_device device;
     pthread_mutex_t lock; /* see note below on mutex acquisition order */
+    pthread_mutex_t cal_lock;
     struct mixer *mixer;
     audio_mode_t mode;
     audio_devices_t out_device;
@@ -540,6 +545,7 @@ struct audio_device {
     unsigned int interactive_usecase_state;
     bool dp_allowed_for_voice;
     void *ext_hw_plugin;
+    bool use_old_pspd_mix_ctrl;
 };
 
 int select_devices(struct audio_device *adev,
